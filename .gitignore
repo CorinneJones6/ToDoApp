@@ -202,3 +202,7 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+.DS_Store
+.env
+node_modules
+

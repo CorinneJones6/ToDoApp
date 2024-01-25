@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 
 //import routes
 const authRoute = require("./routes/auth");
+const toDosRoute = require("./routes/todos"); 
 
 const app = express(); 
 
@@ -18,9 +19,10 @@ app.get("/api", (req, res)=>{
 
 
 app.use("/api/auth", authRoute);
+app.use("/api/todos", toDosRoute);
 
-// connect to a MongoDB database using the URI in .env "MONGO_URI"
-mongoose.connect(process.env.MONGO_URI).then(()=>{ 
+// connect to a MongoDB database using the URI in .env variable "MONGO_URI"
+mongoose.connect(process.env.MONGO_URI).then(()=>{ //connect to database first
     console.log('Connected to database');
 
     // start the Express.js server on the port defined in .env "PORT"

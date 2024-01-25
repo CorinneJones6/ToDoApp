@@ -1,4 +1,4 @@
-require("dotenv").config(); 
+require("dotenv").config(); // load environment variables from .env file 
 const express = require("express");
 const mongoose = require("mongoose"); 
 
@@ -10,26 +10,21 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded()); 
 
+// define a route that handles HTTP GET requests to the root URL "/"
 app.get("/api", (req, res)=>{
 
     res.send("ToDoApp Server"); 
 }); 
 
-// app.post("/name", (req, res)=>{
-//     if(req.body.name){
-//         return res.json({name: req.body.name});
-//     }
-//     else {
-//         return res.status(400).json({error: 'No name provided'})
-//     }
-// });
 
 app.use("/api/auth", authRoute);
 
-mongoose.connect(process.env.MONGO_URI).then(()=>{ //connect to database first
+// connect to a MongoDB database using the URI in .env "MONGO_URI"
+mongoose.connect(process.env.MONGO_URI).then(()=>{ 
     console.log('Connected to database');
 
-    app.listen(process.env.PORT, () => { //listen and start the express server
+    // start the Express.js server on the port defined in .env "PORT"
+    app.listen(process.env.PORT, () => { 
         console.log(`Server is running on port ${process.env.PORT}`);
     });
 

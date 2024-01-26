@@ -5,7 +5,7 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const validateRegisterInput = require("../validation/registerValidation"); 
 const jwt = require('jsonwebtoken'); 
-const requireAuth = require("../middleware/permission"); 
+const requiresAuth = require("../middleware/permission"); 
 
 //@route    GET /api/auth/test
 //@desc     Test the auth route
@@ -45,6 +45,19 @@ router.post("/register", async(req, res)=>{
         
         //save user to database
         const savedUser = await newUser.save(); 
+
+        const payload = {userId: savedUser._id}; 
+
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {
+            expiresIn: "7d"
+        });
+
+        //set a cookie
+        res.cookie("access-token", token, {
+            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            httpOnly: true, 
+            secure: process.env.NODE_ENV==="production"
+        }); 
 
         //create obj to spread the data and delete password
         const userToReturn = {...savedUser._doc};
@@ -114,11 +127,24 @@ router.post("/login", async(req, res)=>{
 //@desc     Return the currently authed user
 //@access   Private
 
-router.get("/current", requireAuth, (req, res) =>{
+router.get("/current", requiresAuth, (req, res) =>{
     if(!req.user){
         return res.status(401).send("Unauthorized"); 
     }
     return res.json(req.user); 
 }); 
+
+//@route    PUT /api/logout
+//@desc     Logout user and clear the cookie
+//@access   Private
+router.put("/logout", async(req, res)=>{
+    try {
+        res.clearCookie("access-token"); 
+        return res.json({success: true}); 
+    } catch (error) {
+        console.log(error); 
+        return res.status(500).send(error.message);
+    }
+});
 
 module.exports = router; 

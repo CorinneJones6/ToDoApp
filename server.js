@@ -1,6 +1,7 @@
 require("dotenv").config(); // load environment variables from .env file 
 const express = require("express");
 const mongoose = require("mongoose"); 
+const cookieParser = require("cookie-parser"); 
 
 //import routes
 const authRoute = require("./routes/auth");
@@ -10,6 +11,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded()); 
+app.use(cookieParser()); 
 
 // define a route that handles HTTP GET requests to the root URL "/"
 app.get("/api", (req, res)=>{

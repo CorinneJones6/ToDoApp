@@ -6,7 +6,7 @@ $primary-dark: #4A90E2;
 $dark: #FFFFFF; 
 $dark-light: #D6EBFD; 
 $white: #333333; 
-$red: #FF5733; 
+$red: #FF5733;
 
 body{
     font-family: 'Roboto', sans-serif; 
@@ -133,4 +133,12 @@ textarea {
         margin-top: 10px; 
         color: $red; 
     }
+}
+
+.loading {
+    min-width: 100vw; 
+    min-height: 100vh; 
+    display: flex;
+    align-items: center; 
+    justify-content: center;  
 }

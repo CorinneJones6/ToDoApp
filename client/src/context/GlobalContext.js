@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useReducer, useEffect} from 'react';
-import axios from 'axios';
+import axios from "axios";
 
 //initial state 
 const initialState = {
@@ -7,7 +7,7 @@ const initialState = {
     fetchingUser: true, 
     completeToDos: [], 
     incompleteToDos: [],
-}
+};
 
 //reducer
 const globalReducer = (state, action) =>{
@@ -35,11 +35,11 @@ const globalReducer = (state, action) =>{
                 completeToDos: [],
                 incompleteToDos: [],
                 fetchingUser: false, 
-            }
+            };
         default: 
             return state; 
     }
-}
+};
 
 //create the context
 export const GlobalContext = createContext(initialState); 
@@ -74,7 +74,7 @@ export const GlobalProvider = (props)=>{
             console.log(error); 
             dispatch({type: "RESET_USER"});
         }
-    }
+    };
 
     const value = {
        ...state, 
@@ -89,7 +89,7 @@ export const GlobalProvider = (props)=>{
     );
 };
 
-const logout = async () =>{
+const logout = async () => {
     try {
         await axios.put("/api/auth/logout");
 

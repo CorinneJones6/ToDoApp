@@ -1,7 +1,8 @@
 import React from "react"; 
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import {BrowserRouter, Routes, Route} from "react-router-dom";
 import Header from "./Header"; 
 import AuthBox from "./AuthBox";
+import Dashboard from "./Dashboard";
 import { useGlobalContext } from "../context/GlobalContext";
 
 const Layout = () => {
@@ -15,8 +16,9 @@ const Layout = () => {
             <Header />
 
             <Routes>
-                <Route exact path ="/" element={<AuthBox />} />
-                <Route path ="/register" element={<AuthBox register/>} />
+                <Route exact path = "/" element={<AuthBox />} />
+                <Route path = "/register" element={<AuthBox register/>} />
+                <Route path = "/dashboard" element ={<Dashboard/>} />
             </Routes>
         </BrowserRouter>
     ); 

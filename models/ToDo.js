@@ -19,7 +19,7 @@ const ToDoSchema = new Schema(
         }
     }, 
     {
-        timestampes: true
+        timestamps: true
     }
 
 );

@@ -1,44 +1,45 @@
-import React, {createContext, useContext, useReducer, useEffect} from 'react';
+import React, { createContext, useContext, useReducer, useEffect} from "react";
 import axios from "axios";
 
-//initial state 
+// initial state
 const initialState = {
-    user: null, 
-    fetchingUser: true, 
-    completeToDos: [], 
-    incompleteToDos: [],
+  user: null,
+  fetchingUser: true,
+  completeToDos: [],
+  incompleteToDos: [],
 };
 
-//reducer
-const globalReducer = (state, action) =>{
-    switch (action.type){
-        case "SET_USER":
-            return {
-                ...state,
-                user: action.payload,
-                fetchingUser: false,
-            };
-        case "SET_COMPLETE_TODOS":
-            return {
-                 ...state,
-                  completeToDos: action.payload,
-             };
-        case "SET_INCOMPLETE_TODOS":
-            return {
-                 ...state,
-                 incompleteToDos: action.payload,
-             };
-        case "RESET_USER":
-            return {
-                ...state, 
-                user: null,
-                completeToDos: [],
-                incompleteToDos: [],
-                fetchingUser: false, 
-            };
-        default: 
-            return state; 
-    }
+
+// reducer
+const globalReducer = (state, action) => {
+  switch (action.type) {
+    case "SET_USER":
+      return {
+        ...state,
+        user: action.payload,
+        fetchingUser: false,
+      };
+    case "SET_COMPLETE_TODOS":
+      return {
+        ...state,
+        completeToDos: action.payload,
+      };
+    case "SET_INCOMPLETE_TODOS":
+      return {
+        ...state,
+        incompleteToDos: action.payload,
+      };
+    case "RESET_USER":
+      return {
+        ...state,
+        user: null,
+        completeToDos: [],
+        incompleteToDos: [],
+        fetchingUser: false,
+      };
+    default:
+      return state;
+  }
 };
 
 //create the context
@@ -76,6 +77,17 @@ export const GlobalProvider = (props)=>{
         }
     };
 
+    const logout = async () => {
+        try {
+          await axios.put("/api/auth/logout");
+    
+          dispatch({ type: "RESET_USER" });
+        } catch (error) {
+          console.log(error);
+          dispatch({ type: "RESET_USER" });
+        }
+      };
+
     const value = {
        ...state, 
        getCurrentUser,
@@ -89,16 +101,7 @@ export const GlobalProvider = (props)=>{
     );
 };
 
-const logout = async () => {
-    try {
-        await axios.put("/api/auth/logout");
 
-        dispatchEvent({type: "RESET_USER"}); 
-    } catch (error) {
-        console.log(error);
-        dispatchEvent({type: "RESET_USER"});
-    }
-};
 
 export function useGlobalContext() {
     return useContext(GlobalContext); 

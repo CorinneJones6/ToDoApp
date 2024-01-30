@@ -6,11 +6,11 @@ const Dashboard = () => {
     const {user} = useGlobalContext(); 
     const navigate = useNavigate(); 
 
-    React.useEffect(()=>{
-        if(!user && navigate) {
-            navigate("/"); 
+    React.useEffect(() => {
+        if (!user && navigate) {
+          navigate("/");
         }
-    }, [user, navigate]);
+      }, [user, navigate]);
 
     return <h1> Dashboard </h1>
 }; 

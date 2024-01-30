@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "engines": {
-    "node": "20.9.0"
+    "node": "20.9.0", 
+    "npm": "10.2.4"
   },
   "dependencies": {
     "abbrev": "^1.1.1",

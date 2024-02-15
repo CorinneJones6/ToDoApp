@@ -24,6 +24,6 @@ const ToDoSchema = new Schema(
 
 );
 
-//export model
+// Export the model to use elseware. 
 const ToDo=model("ToDo", ToDoSchema); 
 module.exports = ToDo; 

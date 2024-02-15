@@ -16,6 +16,7 @@ router.get("/test", (req, res)=>{
 //@access   Private
 router.post("/new", requiresAuth, async(req, res)=>{
     try {
+        // Validate the input data for the todo.
         const {isValid, errors} = validateToDoInput(req.body); 
         if(!isValid){
             return res.status(400).json(errors); 
@@ -27,8 +28,10 @@ router.post("/new", requiresAuth, async(req, res)=>{
             complete: false,
         });
 
-        //save the new todo
+        // Save the new todo item to the database.
         await newToDo.save(); 
+
+        // Respond with the newly created todo item.
         return res.json(newToDo); 
     } 
     catch (error) {
@@ -42,16 +45,19 @@ router.post("/new", requiresAuth, async(req, res)=>{
 //@access   Private
 router.get("/current", requiresAuth, async(req, res)=>{
     try {
+        // Fetch completed todo items for the current user, sorted by completion date.
         const completeToDos = await ToDo.find({
             user: req.user._id,
             complete: true,
         }).sort({completedAt: -1}); 
 
+        // Fetch incomplete todo items for the current user, sorted by creation date.
         const incompleteToDos = await ToDo.find({
             user: req.user._id, 
             complete: false,
         }).sort({createdAt: -1}); 
 
+        // Respond with both completed and incomplete todo items.
         return res.json({incomplete: incompleteToDos, complete: completeToDos});
     } 
     catch (error) {
@@ -65,6 +71,7 @@ router.get("/current", requiresAuth, async(req, res)=>{
 //@access   Private
 router.put("/:toDoId/complete", requiresAuth, async(req, res)=>{
     try {
+         // Attempt to find the todo item by ID and the current user's ID.
         const toDo = await ToDo.findOne({
             user: req.user._id,
             _id: req.params.toDoId
@@ -73,10 +80,12 @@ router.put("/:toDoId/complete", requiresAuth, async(req, res)=>{
             return res.status(404).json({error: 'Could not find Todo'});
         }
 
+         // If the todo item is already marked as complete, return a 400 status code with an error message.
         if(toDo.complete){
             return res.status(400).json({error: "ToDo is already complete"});
         }
 
+        // Update the todo item to mark it as complete and set the completion date.
         const updatedToDo = await ToDo.findOneAndUpdate(
             {
                user: req.user._id, 
@@ -87,10 +96,11 @@ router.put("/:toDoId/complete", requiresAuth, async(req, res)=>{
                 completedAt: new Date(),
             }, 
             {
-                new: true
+                new: true // Return the updated document.
             }
             
            );
+           // Respond with the updated todo item.
            return res.json(updatedToDo); 
     } catch (error) {
         console.log(error); 
@@ -103,6 +113,7 @@ router.put("/:toDoId/complete", requiresAuth, async(req, res)=>{
 //@access   Private
 router.put("/:toDoId/incomplete", requiresAuth, async (req, res) => {
     try {
+           // Similar to the complete route, but marks the todo as incomplete and removes the completion date.
         const toDo = await ToDo.findOne({
             user: req.user._id,
             _id: req.params.toDoId,
@@ -143,34 +154,38 @@ router.put("/:toDoId/incomplete", requiresAuth, async (req, res) => {
 //@access   Private
 router.put("/:toDoId", requiresAuth, async(req, res)=>{
     try {
+          // Find the todo item belonging to the logged-in user with the specified ID.
         const toDo = await ToDo.findOne({
 
-            user:req.user._id,
-            _id: req.params.toDoId
+            user:req.user._id, // User ID from the authentication middleware.
+            _id: req.params.toDoId // ToDo ID from the request parameters.
         }); 
 
         if (!toDo) {
             return res.status(404).json({ error: "Could not find ToDo" });
         }
 
+         // Validate the input for updating the todo item.
         const{ isValid, errors }= validateToDoInput(req.body); 
 
         if(!isValid){
             return res.status(400).json(errors); 
         }
 
+        // Update the todo item with the new content provided in the request body.
         const updatedToDo = await ToDo.findOneAndUpdate(
             {
-                user: req.user._id,
+                user: req.user._id, // Filter to match the document.
                 _id: req.params.toDoId,
             },
             {
-                content: req.body.content
+                content: req.body.content // Update operation.
             },
             {
-                new: true
+                new: true // Return the updated document instead of the original.
             }
         );
+            // Return the updated todo item.
             return res.json(updatedToDo); 
     } catch (error) {
         console.log(error);
@@ -183,20 +198,24 @@ router.put("/:toDoId", requiresAuth, async(req, res)=>{
 //@access   Private
 router.delete("/:toDoId", requiresAuth, async(req, res)=>{
     try {
+        // Find the todo item belonging to the logged-in user with the specified ID.
         const toDo = await ToDo.findOne({
 
-            user:req.user._id,
-            _id: req.params.toDoId
+            user:req.user._id, // User ID from the authentication middleware.
+            _id: req.params.toDoId // ToDo ID from the request parameters.
         }); 
 
         if (!toDo) {
             return res.status(404).json({ error: "Could not find ToDo" });
         }
 
+        // Delete the found todo item.
         await ToDo.findOneAndDelete({
             user: req.user._id,
             _id: req.params.toDoId,
         });
+
+        // Return success response after deletion.
         return res.json({success: true}); 
     } catch (error) {
         console.log(error);
@@ -204,4 +223,4 @@ router.delete("/:toDoId", requiresAuth, async(req, res)=>{
     }
 })
 
-module.exports = router; 
+module.exports = router; // Export the router for use in other parts of the application.

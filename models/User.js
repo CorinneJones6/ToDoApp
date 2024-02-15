@@ -19,6 +19,6 @@ const UserSchema = new Schema(
     }
 );
 
-//export the model 
+// Export the model to use elseware.  
 const User = model("User", UserSchema); 
 module.exports = User; 

@@ -1,11 +1,15 @@
+// Importing React and necessary hooks from React Router DOM and the global context.
 import React from "react"; 
 import { Link, useLocation } from "react-router-dom";
 import { useGlobalContext } from "../context/GlobalContext";
 
 const Header = () => {
-    const { user, logout } = useGlobalContext(); 
+    // Accessing user state and logout function from global context.
+    const { user, logout } = useGlobalContext();
+    // Getting the current path to conditionally render links based on the route. 
     const { pathname } = useLocation(); 
 
+    // Rendering the header component with navigation links and conditional rendering based on user state.
     return (
         <div className ="main-header">
             <div className ="main-header__inner">

@@ -1,11 +1,16 @@
+// Importing necessary modules and hooks
 import React from "react"; 
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios"; 
 import { useGlobalContext } from "../context/GlobalContext";
 
+// AuthBox component for handling both login and registration
 const AuthBox = ({register}) => {
+    // Accessing the global context to use the current user state and the getCurrentUser function
     const { getCurrentUser, user } = useGlobalContext(); 
+    // Hook to programmatically navigate between routes
     const navigate = useNavigate(); 
+    // State hooks for form fields and loading/error states
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState(""); 
     const [confirmPassword, setConfirmPassword] = React.useState("");
@@ -13,16 +18,19 @@ const AuthBox = ({register}) => {
     const [loading, setLoading] = React.useState(false);
     const [errors, setErrors] = React.useState({}); 
 
+    // Redirect to the dashboard if a user is already logged in
     React.useEffect(()=>{
         if(user && navigate){
             navigate("/dashboard"); 
         }
         }, [user, navigate]);
 
+    // Handles form submission for both login and registration    
     const onSubmit = (e) => {
         e.preventDefault(); 
         setLoading(true); 
 
+        // Preparing the data object based on whether it's a registration or login action
         let data = {}; 
 
         if(register) {
@@ -38,11 +46,13 @@ const AuthBox = ({register}) => {
                 password,
             }; 
         }
+        // Sending a POST request to either the login or register endpoint
         axios.post(register ? "/api/auth/register" : "/api/auth/login", data).then(() => {
-            getCurrentUser(); 
+            getCurrentUser(); // Refreshing the current user information
         }).catch(error =>{
-            setLoading(false); 
+            setLoading(false); // Reset loading state
 
+            // Handling errors by setting them in state to be displayed
             if(error?.response?.data){
                 setErrors(error.response.data); 
             }
